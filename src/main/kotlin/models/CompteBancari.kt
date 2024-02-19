@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter
 
 abstract class CompteBancari {
     // Atributs
-    protected var dataObertura: String = LocalDate.now().format(DateTimeFormatter.ofPattern("dd-mm-yyyy"))
+    protected var dataObertura: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd"))
     protected var nomCompte: String = ""
     protected var saldo: Float = 0.0f
 

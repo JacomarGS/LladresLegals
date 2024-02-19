@@ -1,11 +1,15 @@
 package models
 
+import interfices.ILiquidable
 import utilities.readFloat
 import utilities.readInt
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-class CompteCorrent: CompteBancari {
+class CompteCorrent: CompteBancari, ILiquidable {
     // Atributs
     private var comisioManteniment: Float = 20.0f
+    override var dataLiquidacio: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd"))
 
     // Constructors
     constructor()
@@ -26,6 +30,14 @@ class CompteCorrent: CompteBancari {
     }
     override fun consultarSaldo() {
         return println("SALDO ACTUAL: ${super.saldo}€\n")
+    }
+
+    override fun liquidar() {
+        val totalLiquidat = super.saldo
+        super.saldo = 0.0f
+
+        return println("TOTAL LIQUIDAT:   ${totalLiquidat}\n" +
+                       "SALDO ACTUAL:     ${super.saldo}\n")
     }
     fun retirar() {
         val quantitat = readInt(pMessageIn = "Si us plau, introduïu la quantitat de diners que voleu retirar del vostre compte:",

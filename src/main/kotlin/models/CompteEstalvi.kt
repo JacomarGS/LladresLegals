@@ -1,12 +1,14 @@
 package models
 
+import interfices.ILiquidable
 import utilities.readFloat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class CompteEstalvi: CompteBancari {
+class CompteEstalvi: CompteBancari, ILiquidable {
     // Atributs
     private var interessos: Float = super.saldo * 0.04f
+    override var dataLiquidacio: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd"))
 
     // Constructors
     constructor()
@@ -28,13 +30,13 @@ class CompteEstalvi: CompteBancari {
     override fun consultarSaldo() {
         return println("SALDO ACTUAL: ${super.saldo}€\n")
     }
-    fun liquidar() {
-        val penalitzacio = if (LocalDate.now().year - LocalDate.parse(dataObertura, DateTimeFormatter.ofPattern("dd-mm-yyyy")).year < 1) {
+    override fun liquidar() {
+        val penalitzacio = if (LocalDate.now().year - LocalDate.parse(dataObertura, DateTimeFormatter.ofPattern("yyyy-MM-dd")).year < 1) {
             val penalitzacioPercent = 0.03f
             val penalitzacioTotal = super.saldo * penalitzacioPercent
             super.saldo -= penalitzacioTotal
-            println("PENALITZACIÓ PER LIQUIDACIÓ ABANS D'UN ANY:   ${penalitzacioTotal}\n" +
-                    "SALDO ACTUAL:                                 ${super.saldo}\n")
+            return println("PENALITZACIÓ PER LIQUIDACIÓ ABANS D'UN ANY:   ${penalitzacioTotal}\n" +
+                           "SALDO ACTUAL:                                 ${super.saldo}\n")
         } else {
             0.0f
         }
@@ -42,8 +44,8 @@ class CompteEstalvi: CompteBancari {
         val totalLiquidat = super.saldo
         super.saldo = 0.0f
 
-        println("LIQUIDACIÓ AMB PENALITZACIÓ:   ${penalitzacio}\n" +
-                "SALDO LIQUIDAT:                ${totalLiquidat}\n")
+        return println("LIQUIDACIÓ AMB PENALITZACIÓ:   ${penalitzacio}\n" +
+                       "SALDO LIQUIDAT:                ${totalLiquidat}\n")
     }
 
     // Getters
