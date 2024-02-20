@@ -71,9 +71,7 @@ class CompteEstalvi: CompteBancari, ILiquidable {
 
     // toString
     override fun toString(): String {
-        return "NOM DEL COMPTE:      ${this.nomCompte}\n" +
-               "DATA D'OBERTURA:     ${this.dataObertura}\n" +
-               "SALDO ACTUAL:        ${this.saldo}\n"
+        return "NOM DEL COMPTE: ${this.nomCompte}\n" + "DATA D'OBERTURA: ${this.dataObertura}\n" + "SALDO ACTUAL: ${this.saldo}\n"
         // + super.toString()
     }
 }
