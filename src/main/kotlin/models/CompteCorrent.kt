@@ -1,72 +1,59 @@
 package models
 
 import interfices.ILiquidable
-import utilities.readFloat
-import utilities.readInt
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 class CompteCorrent: CompteBancari, ILiquidable {
     // Atributs
     private var comisioManteniment: Float = 20.0f
-    override var dataLiquidacio: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyy-MM-dd"))
+    override var dataLiquidacio: String = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
     // Constructors
-    constructor()
-    constructor(pDataObertura:String, pNomCompte:String, pSaldo:Float, pComisioManteniment:Float = 20.0f): super() {
-        super.dataObertura = pDataObertura
+    constructor(pNomCompte:String, pSaldo:Float, pComisioManteniment:Float): super(pNomCompte, pSaldo) {
         super.nomCompte = pNomCompte
         super.saldo = pSaldo
         this.comisioManteniment = pComisioManteniment
     }
 
     // Mètodes
-    override fun ingressar() {
-        val quantitat = readFloat(pMessageIn = "Si us plau, introduïu la quantitat de diners que voleu ingressar al vostre compte:",
-            pMessageErrorDT = "La quantitat ha de ser un nombre positiu i, si cal, amb decimal.")
-        super.saldo += quantitat
-        return println("QUANTITAT INGRESSADA:   ${quantitat}€\n" +
-                       "SALDO ACTUAL:           ${super.saldo}€\n")
+    override fun ingressar(pQuantitat: Float) {
+        this.saldo += pQuantitat
+        println("Total ingressat: ${pQuantitat}€\n" + "Saldo actual: ${this.saldo}€")
     }
     override fun consultarSaldo() {
-        return println("SALDO ACTUAL: ${super.saldo}€\n")
+        return println("Saldo actual: ${this.saldo}€\n")
     }
 
     override fun liquidar() {
-        val totalLiquidat = super.saldo
-        super.saldo = 0.0f
+        this.dataLiquidacio = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val totalLiquidat = this.saldo
+        this.saldo = 0.0f
 
-        return println("TOTAL LIQUIDAT:   ${totalLiquidat}\n" +
-                       "SALDO ACTUAL:     ${super.saldo}\n")
+        return println("Compte corrent liquidat a data de ${this.dataLiquidacio}.\n" + "Saldo liquidat: ${totalLiquidat}€\n")
     }
-    fun retirar() {
-        val quantitat = readInt(pMessageIn = "Si us plau, introduïu la quantitat de diners que voleu retirar del vostre compte:",
-            pMessageErrorDT = "La quantitat ha de ser un número positiu sense decimal.")
-        if (super.saldo - quantitat < 0) {
-            super.saldo -= quantitat + (quantitat * 0.10f)
-            return println("QUANTITAT RETIRADA (AMB COMISSIÓ DE DESCOBERT):   ${quantitat}\n" +
-                           "SALDO ACTUAL:                                     ${super.saldo}\n")
+    fun retirar(quantitat: Float) {
+        if (this.saldo >= quantitat) {
+            this.saldo -= quantitat
+            return println("Total retirat $quantitat€\n" + "Saldo actual: ${this.saldo}€")
         } else {
-            super.saldo -= quantitat
-            return println("QUANTITAT RETIRADA:   ${quantitat}\n" +
-                           "SALDO ACTUAL:         ${super.saldo}\n")
+            return println("Fondos insuficientes en el compte ${this.nomCompte}.\n" + "Operació no realitzada.")
         }
     }
     fun cobrarComisio() {
-        super.saldo -= this.comisioManteniment
-        return println("COMISSIÓ DE MANTENIMENT:   ${this.comisioManteniment}\n" +
-                       "SALDO ACTUAL:              ${super.saldo}")
+        this.saldo -= this.comisioManteniment
+        return println("Comissió de manteniment cobrada al compte ${this.nomCompte}.\n" +  "Saldo actual: ${this.saldo}€")
     }
 
     // Getters
     fun getDataObertura(): String {
-        return super.dataObertura
+        return this.dataObertura
     }
     fun getNomCompte(): String {
-        return super.nomCompte
+        return this.nomCompte
     }
     fun getSaldo(): Float {
-        return super.saldo
+        return this.saldo
     }
     fun getComisioManteniment(): Float {
         return this.comisioManteniment
@@ -74,13 +61,13 @@ class CompteCorrent: CompteBancari, ILiquidable {
 
     // Setters
     fun setDataObertura(pDataObertura: String) {
-        super.dataObertura = pDataObertura
+        this.dataObertura = pDataObertura
     }
     fun setNomCompte(pNomCompte: String) {
-        super.nomCompte = pNomCompte
+        this.nomCompte = pNomCompte
     }
     fun setSaldo(pSaldo: Float) {
-        super.saldo = pSaldo
+        this.saldo = pSaldo
     }
     fun setComisioManteniment(pComisioManteniment: Float) {
         this.comisioManteniment = pComisioManteniment
